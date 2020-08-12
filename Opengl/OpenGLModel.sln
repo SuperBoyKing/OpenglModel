@@ -7,16 +7,22 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Application", "Opengl\Openg
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|x64.ActiveCfg = Debug|x64
-		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|x64.Build.0 = Debug|x64
+		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|ARM.ActiveCfg = Debug|ARM
+		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|ARM.Build.0 = Debug|ARM
+		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|x64.ActiveCfg = Debug|Win32
+		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|x64.Build.0 = Debug|Win32
 		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|x86.ActiveCfg = Debug|Win32
 		{20BD41F5-1B85-4621-9886-531031AE6B62}.Debug|x86.Build.0 = Debug|Win32
+		{20BD41F5-1B85-4621-9886-531031AE6B62}.Release|ARM.ActiveCfg = Release|ARM
+		{20BD41F5-1B85-4621-9886-531031AE6B62}.Release|ARM.Build.0 = Release|ARM
 		{20BD41F5-1B85-4621-9886-531031AE6B62}.Release|x64.ActiveCfg = Release|x64
 		{20BD41F5-1B85-4621-9886-531031AE6B62}.Release|x64.Build.0 = Release|x64
 		{20BD41F5-1B85-4621-9886-531031AE6B62}.Release|x86.ActiveCfg = Release|Win32
