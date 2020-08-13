@@ -2,9 +2,8 @@
 
 unsigned int TextureFromFile(const char* path, const string& directory, bool gamma = false);
 
-Model::Model(string path, bool gamma = false) : gammaCorrection(gamma)
+Model::Model(string const& path)
 {
-	path.c_str();
 	loadModel(path);
 }
 
@@ -16,15 +15,15 @@ void Model::Draw(Shader& shader)
 
 void Model::loadModel(const string& path)
 {
-	Assimp::Importer import;
-	const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs/* | aiProcess_CalcTangentSpace*/);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		cout << "ERROR::ASSIMP::" << import.GetErrorString() << endl;
+		cout << "ERROR::ASSIMP::" << importer.GetErrorString() << endl;
 		return;
 	}
-	directory = path.substr(0, path.find_last_of('/'));
+	m_directory = path.substr(0, path.find_last_of('/'));
 
 	processNode(scene->mRootNode, scene);
 }
@@ -73,7 +72,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		else
 			vertex.TexCoords = glm::vec2(0.0f, 0.0f);
 
-		vector.x = mesh->mTangents[i].x;
+		/*vector.x = mesh->mTangents[i].x;
 		vector.y = mesh->mTangents[i].y;
 		vector.z = mesh->mTangents[i].z;
 		vertex.Tangent = vector;
@@ -81,7 +80,7 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 		vector.x = mesh->mBitangents[i].x;
 		vector.y = mesh->mBitangents[i].y;
 		vector.z = mesh->mBitangents[i].z;
-		vertex.Bitangent = vector;
+		vertex.Bitangent = vector;*/
 		vertices.push_back(vertex);
 	}
 
@@ -92,16 +91,18 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
 			indices.push_back(face.mIndices[j]);
 	}
 
-	aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-	vector<Texture> diffuseMaps = loadMeterialTexture(material, aiTextureType_DIFFUSE, "texture_diffuse");
-	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-	vector<Texture> specularMaps = loadMeterialTexture(material, aiTextureType_SPECULAR, "texture_specular");
-	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-	std::vector<Texture> normalMaps = loadMeterialTexture(material, aiTextureType_HEIGHT, "texture_normal");
-	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-	std::vector<Texture> heightMaps = loadMeterialTexture(material, aiTextureType_AMBIENT, "texture_height");
-	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		vector<Texture> diffuseMaps = loadMeterialTexture(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		vector<Texture> specularMaps = loadMeterialTexture(material, aiTextureType_SPECULAR, "texture_specular");
+		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+		std::vector<Texture> normalMaps = loadMeterialTexture(material, aiTextureType_HEIGHT, "texture_normal");
+		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+		std::vector<Texture> heightMaps = loadMeterialTexture(material, aiTextureType_AMBIENT, "texture_height");
+		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+	}
 
 	return Mesh(vertices, indices, textures);
 }
@@ -126,7 +127,7 @@ vector<Texture> Model::loadMeterialTexture(aiMaterial* mat, aiTextureType type, 
 		if (!skip)
 		{
 			Texture texture;
-			texture.id = TextureFromFile(str.C_Str(), this->directory);
+			texture.id = TextureFromFile(str.C_Str(), this->m_directory);
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);

@@ -91,7 +91,7 @@ int main()
     // -----------
     std::string path = "res/objects/backpack.obj";
 
-    Model ourModel(path, false);
+    Model ourModel("res/objects/backpack.obj");
 
 
     // render loop
