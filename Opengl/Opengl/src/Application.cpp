@@ -47,9 +47,6 @@ int main()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
 
     // glfw window creation
     // --------------------
@@ -67,73 +64,75 @@ int main()
 
     // tell GLFW to capture our mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
-    if (glewInit() != GLEW_OK)
     {
-        fprintf(stderr, "Failed to initialize GLEW\n");
-        return -1;
-    }
 
-    // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
-    stbi_set_flip_vertically_on_load(true);
+        // glad: load all OpenGL function pointers
+        // ---------------------------------------
+        if (glewInit() != GLEW_OK)
+        {
+            fprintf(stderr, "Failed to initialize GLEW\n");
+            return -1;
+        }
 
-    // configure global opengl state
-    // -----------------------------
-    glEnable(GL_DEPTH_TEST);
+        // tell stb_image.h to flip loaded texture's on the y-axis (before loading model).
+        stbi_set_flip_vertically_on_load(true);
 
-    // build and compile shaders
-    // -------------------------
-    Shader modelShader("res/shader/model.shader");
+        // configure global opengl state
+        // -----------------------------
+        glEnable(GL_DEPTH_TEST);
 
-    // load models
-    // -----------
-    std::string path = "res/objects/backpack.obj";
+        // build and compile shaders
+        // -------------------------
+        Shader modelShader("res/shader/model.shader");
 
-    Model ourModel("res/objects/backpack.obj");
+        // load models
+        // -----------
+        std::string path = "res/objects/backpack.obj";
 
-
-    // render loop
-    // -----------
-    while (!glfwWindowShouldClose(window))
-    {
-        // per-frame time logic
-        // --------------------
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-        // input
-        // -----
-        processInput(window);
-
-        // render
-        // ------
-        glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // don't forget to enable shader before setting uniforms
-        modelShader.Bind();
-
-        // view/projection transformations
-        glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-        glm::mat4 view = camera.GetViewMatrix();
-        modelShader.setMat4("projection", projection);
-        modelShader.setMat4("view", view);
-
-        // render the loaded model
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-        modelShader.setMat4("model", model);
-        ourModel.Draw(modelShader);
+        Model ourModel("res/objects/backpack.obj");
 
 
-        // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
-        // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        // render loop
+        // -----------
+        while (!glfwWindowShouldClose(window))
+        {
+            // per-frame time logic
+            // --------------------
+            float currentFrame = glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
+
+            // input
+            // -----
+            processInput(window);
+
+            // render
+            // ------
+            glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            // don't forget to enable shader before setting uniforms
+            modelShader.Bind();
+
+            // view/projection transformations
+            glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+            glm::mat4 view = camera.GetViewMatrix();
+            modelShader.setMat4("projection", projection);
+            modelShader.setMat4("view", view);
+
+            // render the loaded model
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+            model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+            modelShader.setMat4("model", model);
+            ourModel.Draw(modelShader);
+
+
+            // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
+            // -------------------------------------------------------------------------------
+            glfwSwapBuffers(window);
+            glfwPollEvents();
+        }
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
